@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Try Me Page</title>
+</head>
+<body>
+    <button id="tryMeButton">Try Me</button>
+    <p id="response"></p>
+
+    <script>
+        document.getElementById('tryMeButton').addEventListener('click', async () => {
+            try {
+                const response = await fetch('http://localhost:80/users');
+                const data = await response.json();
+                document.getElementById('response').innerText = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('response').innerText = 'Error fetching data';
+            }
+        });
+    </script>
+</body>
+</html>
