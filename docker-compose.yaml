@@ -1,0 +1,19 @@
+services:
+  postgres-db-c:
+    image: postgres:17.4
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=database
+  
+  backend-server-c:
+    image: backend-server:latest
+    ports:
+      - "8080:8080"
+
+  frontend-server-c:
+    image: frontend-app:latest
+    ports:
+      - "80:80"
+

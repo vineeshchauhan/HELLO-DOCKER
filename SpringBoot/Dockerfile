@@ -1,6 +1,9 @@
 # Use an official JDK runtime as the base image
 FROM openjdk:17-jdk-slim
 
+# Install curl
+RUN apt-get update && apt-get install -y curl
+
 # Set the working directory
 WORKDIR /app
 
