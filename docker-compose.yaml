@@ -6,14 +6,33 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=database
+    healthcheck:  # ✅ Required for "service_healthy"
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      retries: 5
+      start_period: 10s
   
   backend-server-c:
-    image: backend-server:latest
+    build: 
+      context: /SpringBoot
+      dockerfile: Dockerfile
     ports:
       - "8080:8080"
+    depends_on:
+      postgres-db-c:
+        condition: service_healthy
+    healthcheck:  # ✅ Ensure backend is healthy before frontend starts
+      test: ["CMD", "curl", "-f", "http://localhost:8080/users"]
+      interval: 10s
+      retries: 5
+      start_period: 10s
 
   frontend-server-c:
-    image: frontend-app:latest
+    build: 
+     context: /NginxFE
+     dockerfile: Dockerfile
     ports:
-      - "80:80"
-
+     - "80:80"
+    depends_on:
+     backend-server-c:
+       condition: service_healthy
