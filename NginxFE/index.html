@@ -6,7 +6,28 @@
     <title>Try Me Page</title>
 </head>
 <body>
+    <input type="text" id="userInput" placeholder="Enter value">
+    <button id="submitButton">Submit</button>
     <button id="tryMeButton">Try Me</button>
+    
+    <script>
+        document.getElementById('submitButton').addEventListener('click', async () => {
+            const inputValue = document.getElementById('userInput').value;
+            try {
+                const response = await fetch('http://localhost:80/users', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name: inputValue })
+                });
+                const data = await response.json();
+                document.getElementById('response').innerText = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('response').innerText = 'Error submitting data';
+            }
+        });
+    </script>
     <p id="response"></p>
 
     <script>

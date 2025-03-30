@@ -1,23 +1,27 @@
+networks:
+  app-network:  # Define the network
 services:
   postgres-db-c:
+    container_name: postgres-db
     image: postgres:17.4
-    ports:
-      - "5432:5432"
+    networks:
+      - app-network
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=database
     healthcheck:  # ✅ Required for "service_healthy"
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
       interval: 10s
       retries: 5
       start_period: 10s
   
   backend-server-c:
+    container_name: backend-server
     build: 
       context: /SpringBoot
       dockerfile: Dockerfile
-    ports:
-      - "8080:8080"
+    networks:
+      - app-network
     depends_on:
       postgres-db-c:
         condition: service_healthy
@@ -28,11 +32,14 @@ services:
       start_period: 10s
 
   frontend-server-c:
+    container_name: frontend-server
     build: 
      context: /NginxFE
      dockerfile: Dockerfile
     ports:
      - "80:80"
+    networks:
+      - app-network
     depends_on:
      backend-server-c:
        condition: service_healthy
